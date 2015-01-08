@@ -9,7 +9,12 @@
 
 	<artifactId>metal-core</artifactId>
 
-	<dependencies>		
+	<dependencies>
+		<dependency>
+			<groupId>org.alloy</groupId>
+			<artifactId>metal-base</artifactId>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>

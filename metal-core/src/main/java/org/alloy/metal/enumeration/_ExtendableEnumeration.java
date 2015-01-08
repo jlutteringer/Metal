@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.alloy.metal.collections.iterable._Iterable;
-import org.alloy.metal.collections.lists._List;
+import org.alloy.metal.collections.lists._Lists;
 import org.alloy.metal.collections.map._Map;
 
 import com.google.common.base.Throwables;
 
 public class _ExtendableEnumeration {
 	private static volatile boolean configured = false;
-	private static Map<String, List<ExtendableEnumeration>> enumerations = _Map.defaultHashMap(_List.listSupplier());
+	private static Map<String, List<ExtendableEnumeration>> enumerations = _Map.defaultHashMap(_Lists.listSupplier());
 
 	public static boolean isConfigured() {
 		return configured;
