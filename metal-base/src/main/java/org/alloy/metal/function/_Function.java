@@ -1,61 +1,84 @@
 package org.alloy.metal.function;
 
-import java.util.function.BiFunction;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
-import org.alloy.metal.collections.iterable._Iterable;
+import org.alloy.metal.transducers.Transducer;
+import org.alloy.metal.transducers.Transducer.Reducer;
+
+import com.google.common.collect.Lists;
 
 public class _Function {
-	public interface Fun0<T> {
-		public T apply();
+	public static <T, N> Transducer<T, N> map(Function<N, T> function) {
+		return new Transducer<T, N>() {
+			@Override
+			public <R> Reducer<R, N> apply(Reducer<R, ? super T> reducer) {
+				return new Reducer<R, N>() {
+					@Override
+					public R apply(R result, N input) {
+						return reducer.apply(result, function.apply(input));
+					}
+				};
+			}
+		};
 	}
 
-	public interface _Supplier<T> extends Fun0<T> {
+	public static <A, P> Transducer<Iterable<A>, A> partitionBy(final Function<A, P> f) {
+		return new Transducer<Iterable<A>, A>() {
+			@Override
+			public <R> Reducer<R, A> apply(final Reducer<R, ? super Iterable<A>> rf) {
+				return new Reducer<R, A>() {
+					List<A> part = new ArrayList<A>();
+					Object mark = new Object();
+					Object prior = mark;
 
+					@Override
+					public R complete(R result) {
+						R ret = result;
+						if (!part.isEmpty()) {
+							List<A> copy = new ArrayList<A>(part);
+							part.clear();
+							ret = rf.apply(result, copy);
+						}
+						return rf.complete(ret);
+					}
+
+					@Override
+					public R apply(R result, A input) {
+						P val = f.apply(input);
+						if ((prior == mark) || (prior.equals(val))) {
+							prior = val;
+							part.add(input);
+							return result;
+						} else {
+							List<A> copy = new ArrayList<A>(part);
+							prior = val;
+							part.clear();
+							R ret = rf.apply(result, copy);
+							if (!false) {
+								part.add(input);
+							}
+							return ret;
+						}
+					}
+				};
+			}
+		};
 	}
 
-	public interface Fun1<T, N> extends Function<T, N> {
+	public static void test() {
+		Transducer<String, Integer> transducer = map((a) -> a.toString());
+		Transducer<Long, String> transducer2 = map((a) -> Long.parseLong(a));
 
-	}
+		Reducer<Object, Integer> reducer = transducer.apply(transducer2.apply(null));
+		Transducer<Long, Integer> combined = transducer.combine(transducer2);
 
-	public interface Fun2<T, N, S> extends BiFunction<T, N, S> {
+		Long l = combined.transduce(Lists.newArrayList(1, 2, 3), 0L, (result, input) -> result + input);
 
-	}
-
-	public interface VFun0 {
-		public void apply();
-	}
-
-	public interface VFun1<T> {
-		public void apply(T arg1);
-	}
-
-	public interface _Consumer<T> extends VFun1<T> {
-
-	}
-
-	public interface VFun2<T, N> {
-		public void apply(T arg1, N arg2);
-	}
-
-	public static <T, N> Iterable<N> map(Iterable<T> iterable, Function<T, N> transformer) {
-		return _Iterable.transform(iterable, transformer);
-	}
-
-	public static interface Accumulator<T> extends Function<T, Long> {
-
-	}
-
-	public static <T> long accumulate(Iterable<T> iterable, Accumulator<T> accumulator) {
-		long total = 0;
-		for (T element : iterable) {
-			total = total + accumulator.apply(element);
-		}
-		return total;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <T, N> Function<T, N> cast() {
-		return (value) -> ((N) value);
+		List<String> strings = transducer.transduce(Lists.newArrayList(1, 2, 3), Lists.newArrayList(), (result, input) -> {
+			result.add(input);
+			return result;
+		});
 	}
 }

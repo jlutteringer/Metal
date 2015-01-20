@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.alloy.metal.collections.iterable._Iterable;
 import org.alloy.metal.collections.lists._Lists;
-import org.alloy.metal.function._Function;
+import org.alloy.metal.function.OldFunction;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -109,7 +109,7 @@ public class ConcreteDirectory<T, N> implements Directory<T, N> {
 
 	@Override
 	public long size() {
-		return _Function.accumulate(indexes, (index) -> index.size());
+		return OldFunction.accumulate(indexes, (index) -> index.size());
 	}
 
 	@Override

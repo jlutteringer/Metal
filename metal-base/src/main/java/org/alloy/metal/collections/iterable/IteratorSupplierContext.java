@@ -13,7 +13,7 @@ import org.alloy.metal.collections.lists._Lists;
 import org.alloy.metal.function.NullableValue;
 import org.alloy.metal.function.StatefulSupplier;
 import org.alloy.metal.function.SupplierContext;
-import org.alloy.metal.function._Function;
+import org.alloy.metal.function.OldFunction;
 import org.alloy.metal.function._Predicate;
 
 import com.google.common.collect.Iterators;
@@ -22,7 +22,7 @@ public class IteratorSupplierContext<T, N> implements SupplierContext<IteratorSu
 	private Iterable<T> iterable;
 	private IteratorProcessor<T, N> processor = new DefaultIteratorProcessor<>();
 
-	private Function<T, Iterable<N>> transformer = _Iterable.singletonIteratorTransformer(_Function.cast());
+	private Function<T, Iterable<N>> transformer = _Iterable.singletonIteratorTransformer(OldFunction.cast());
 	private Predicate<? super N> filter = _Predicate.matchAll();
 
 	public IteratorSupplierContext(Iterable<T> iterable) {
