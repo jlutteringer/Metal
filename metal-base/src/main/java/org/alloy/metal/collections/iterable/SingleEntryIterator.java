@@ -11,7 +11,7 @@ public abstract class SingleEntryIterator<T> implements Iterator<T> {
 	public boolean hasNext() {
 		if (!nextGenerated) {
 			try {
-				next = generateNext();
+				next = fetch();
 				nextGenerated = true;
 			} catch (NoSuchElementException e) {
 				nextGenerated = false;
@@ -27,7 +27,7 @@ public abstract class SingleEntryIterator<T> implements Iterator<T> {
 			return next;
 		}
 		else {
-			return generateNext();
+			return fetch();
 		}
 	}
 
@@ -36,5 +36,5 @@ public abstract class SingleEntryIterator<T> implements Iterator<T> {
 		throw new UnsupportedOperationException();
 	}
 
-	protected abstract T generateNext() throws NoSuchElementException;
+	protected abstract T fetch() throws NoSuchElementException;
 }

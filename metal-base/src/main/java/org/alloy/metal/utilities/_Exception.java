@@ -3,7 +3,7 @@ package org.alloy.metal.utilities;
 import java.util.Optional;
 
 import org.alloy.metal.function.ExceptionOperation;
-import org.alloy.metal.function.ExceptionSupplierOperation;
+import org.alloy.metal.function.ExceptionSupplier;
 
 import com.google.common.base.Throwables;
 
@@ -16,9 +16,9 @@ public class _Exception {
 		}
 	}
 
-	public static <T> T propagate(ExceptionSupplierOperation<T> operation) {
+	public static <T> T propagate(ExceptionSupplier<T, Exception> operation) {
 		try {
-			return operation.get();
+			return operation.next();
 		} catch (Exception e) {
 			throw Throwables.propagate(e);
 		}
@@ -31,9 +31,9 @@ public class _Exception {
 		}
 	}
 
-	public static <T> Optional<T> ignore(ExceptionSupplierOperation<T> operation) {
+	public static <T> Optional<T> ignore(ExceptionSupplier<T, Exception> operation) {
 		try {
-			return Optional.of(operation.get());
+			return Optional.of(operation.next());
 		} catch (Exception e) {
 			return Optional.empty();
 		}

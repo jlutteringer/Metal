@@ -1,5 +1,6 @@
 package org.alloy.metal.string;
 
+
 public class _String {
 	public static final String CHARACTER_ENCODING = "UTF-8";
 
@@ -85,5 +86,41 @@ public class _String {
 			return "";
 		}
 		return string;
+	}
+
+	public static String concat(Iterable<String> iterable) {
+		String s = "";
+		for (String string : iterable) {
+			s = s + string;
+		}
+		return s;
+	}
+
+	public static String concat(Iterable<String> iterable, String seperator) {
+		String s = null;
+		for (String string : iterable) {
+			if (s == null) {
+				s = string;
+			}
+			else {
+				s = s + seperator + string;
+			}
+		}
+		return s;
+	}
+
+	public static String max(Iterable<String> iterable) {
+		String maxString = null;
+		for (String string : iterable) {
+			if (maxString == null) {
+				maxString = string;
+			}
+			else {
+				if (maxString.length() < string.length()) {
+					maxString = string;
+				}
+			}
+		}
+		return maxString;
 	}
 }

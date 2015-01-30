@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.alloy.metal.function.Tuple.Pair;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -39,6 +41,15 @@ public class _Map {
 			map.put(key, item);
 		});
 
+		return map;
+	}
+
+	@SafeVarargs
+	public static <T, N> Map<T, N> map(Pair<T, N>... elements) {
+		Map<T, N> map = map();
+		for (Pair<T, N> pair : elements) {
+			map.put(pair.getFirst(), pair.getSecond());
+		}
 		return map;
 	}
 

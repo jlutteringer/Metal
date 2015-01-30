@@ -21,7 +21,10 @@ public class CollectionMonitor<T> {
 			@Override
 			public boolean test() {
 				boolean hasChanged = true;
-				if (_Collections.compareElements(previousCollection, collectionToMonitor, _Equality.natural(), false)) {
+				if (previousCollection.size() != collectionToMonitor.size()) {
+					hasChanged = true;
+				}
+				else if (_Collections.compareElements(previousCollection, collectionToMonitor, _Equality.natural(), false)) {
 					hasChanged = false;
 				}
 

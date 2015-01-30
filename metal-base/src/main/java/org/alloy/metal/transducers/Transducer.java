@@ -1,37 +1,52 @@
 package org.alloy.metal.transducers;
 
+import org.alloy.metal.collections.flow.Flow;
+
 @FunctionalInterface
 public interface Transducer<T, N> {
-	public <R> Reducer<R, N> apply(Reducer<R, ? super T> reducer);
+	public <R> CompletingReducer<R, N> apply(CompletingReducer<R, ? super T> reducer);
 
 	public default <R> R transduce(Iterable<N> input, R initial, Reducer<R, ? super T> reducer) {
 		return Transducers.transduce(this, input, initial, reducer);
 	}
 
+	public default <R> Flow<R> transduceDeferred(Flow<N> input, R initial, Reducer<R, ? super T> reducer) {
+		return Transducers.transduceDeferred(this, input, initial, reducer);
+	}
+
+	public default <R> Iterable<R> transduceDeferred(Iterable<N> input, R initial, Reducer<R, ? super T> reducer) {
+		return Transducers.transduceDeferred(this, input, initial, reducer);
+	}
+
 	public default <A> Transducer<A, N> combine(final Transducer<A, ? super T> right) {
 		return new Transducer<A, N>() {
 			@Override
-			public <R> Reducer<R, N> apply(Reducer<R, ? super A> reducer) {
+			public <R> CompletingReducer<R, N> apply(CompletingReducer<R, ? super A> reducer) {
 				return Transducer.this.apply(right.apply(reducer));
 			}
 		};
 	}
 
-	public interface StepFunction<T, N> {
-		public T apply(T result, N input);
+	public interface Reducer<T, N> {
+		public T reduce(T result, N input);
 	}
 
-	public interface Reducer<T, N> extends StepFunction<T, N> {
-		public default T complete(T result) {
-			return result;
-		}
+	public interface CompletingReducer<T, N> {
+		public Reduction<T> reduce(T result, N input);
 
-		public static HaltReductionExcpetion halt() {
-			throw new HaltReductionExcpetion();
-		}
+		public Reduction<T> complete(T result);
 	}
 
-	public static class HaltReductionExcpetion extends RuntimeException {
-		private static final long serialVersionUID = -1378832032859633919L;
+	public abstract class ReducerOn<T, N> implements CompletingReducer<T, N> {
+		private CompletingReducer<T, ?> reducer;
+
+		public ReducerOn(CompletingReducer<T, ?> reducer) {
+			this.reducer = reducer;
+		}
+
+		@Override
+		public Reduction<T> complete(T result) {
+			return reducer.complete(result);
+		}
 	}
 }

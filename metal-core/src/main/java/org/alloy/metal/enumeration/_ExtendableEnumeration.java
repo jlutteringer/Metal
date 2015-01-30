@@ -23,7 +23,8 @@ public class _ExtendableEnumeration {
 
 	public static <T extends AbstractExtendableEnumeration> T create(String type, String friendlyType, Class<T> clazz) {
 		if (configured) {
-			throw new RuntimeException("Configuration of enumerations has already been completed");
+			throw new RuntimeException("Configuration of enumerations has already been completed,"
+					+ " cannot create " + type + " of class " + clazz);
 		}
 
 		try {

@@ -6,7 +6,7 @@ import org.alloy.metal.function.ExceptionConsumer;
 import org.alloy.metal.function.ExceptionFunction;
 
 public class _Closeable {
-	public static <T extends Closeable> void with(T closeable, ExceptionConsumer<T> consumer) {
+	public static <T extends Closeable> void with(T closeable, ExceptionConsumer<T, ?> consumer) {
 		_Exception.propagate(() -> {
 			try {
 				consumer.accept(closeable);

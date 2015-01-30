@@ -90,7 +90,7 @@ public class _Resource {
 		});
 	}
 
-	public static void getInputStream(Resource resource, ExceptionConsumer<InputStream> consumer) {
+	public static void getInputStream(Resource resource, ExceptionConsumer<InputStream, ?> consumer) {
 		_Closeable.with(getInputStream(resource), consumer);
 	}
 

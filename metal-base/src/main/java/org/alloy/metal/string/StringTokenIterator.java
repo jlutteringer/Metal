@@ -23,7 +23,7 @@ public class StringTokenIterator extends SingleEntryIterator<StringToken> {
 	}
 
 	@Override
-	protected StringToken generateNext() throws NoSuchElementException {
+	protected StringToken fetch() throws NoSuchElementException {
 		if (currentLocation >= source.length() - 1) {
 			throw new NoSuchElementException();
 		}

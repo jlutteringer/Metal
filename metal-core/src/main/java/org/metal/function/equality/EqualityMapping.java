@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.alloy.metal.function.Groups;
 import org.alloy.metal.function.Groups.BiGroup;
 import org.alloy.metal.function.Tuple.Pair;
+import org.alloy.metal.function._Tuple;
 import org.alloy.metal.function.equality.Equalitor;
 import org.alloy.metal.function.equality.SymmetricEqualitor;
-import org.alloy.metal.function._Tuple;
 import org.alloy.metal.object._Object;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -46,8 +46,8 @@ public class EqualityMapping<T> {
 			return result;
 		}
 		else {
-			logger.trace("Falling back to .equals()");
-			return first.equals(second);
+			logger.trace("No equality definition fount for objects {} {}", first, second);
+			return false;
 		}
 	}
 

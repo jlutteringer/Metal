@@ -1,5 +1,6 @@
 package org.alloy.metal.url;
 
+import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
@@ -87,5 +88,9 @@ public class _Url {
 			}
 		}
 		return new AlloyUrl(paths, Maps.<String, Object> newHashMap());
+	}
+
+	public static URI uri(String jenkinsLocation) {
+		return _Exception.propagate(() -> new URI(jenkinsLocation));
 	}
 }

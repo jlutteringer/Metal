@@ -15,7 +15,7 @@ public class GeneratingIterator<T, N> extends SingleEntryIterator<T> {
 	}
 
 	@Override
-	protected T generateNext() throws NoSuchElementException {
+	protected T fetch() throws NoSuchElementException {
 		return supplier.apply(state).getOrThrow(new NoSuchElementException());
 	}
 }
