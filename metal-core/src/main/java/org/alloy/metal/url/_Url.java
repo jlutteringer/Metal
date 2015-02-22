@@ -61,13 +61,13 @@ public class _Url {
 
 	public static String encode(String pathString) {
 		return _Exception.propagate(() -> {
-			String encoded = URLEncoder.encode(pathString, _String.CHARACTER_ENCODING);
+			String encoded = URLEncoder.encode(pathString, _String.CHARACTER_ENCODING.toString());
 			return encoded.replace("+", "%20");
 		});
 	}
 
 	public static String decode(String pathString) {
-		return _Exception.propagate(() -> URLDecoder.decode(pathString, _String.CHARACTER_ENCODING));
+		return _Exception.propagate(() -> URLDecoder.decode(pathString, _String.CHARACTER_ENCODING.toString()));
 	}
 
 	public static AlloyUrlBuilder create() {

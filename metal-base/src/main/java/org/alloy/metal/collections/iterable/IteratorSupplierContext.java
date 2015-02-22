@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import org.alloy.metal.collections._Iterator;
 import org.alloy.metal.collections.iterable.IteratorSupplierContext.IteratorSupplierState;
 import org.alloy.metal.collections.lists._Lists;
-import org.alloy.metal.function.NullableValue;
+import org.alloy.metal.function.Value;
 import org.alloy.metal.function.StatefulSupplier;
 import org.alloy.metal.function.SupplierContext;
 import org.alloy.metal.function.OldFunction;
@@ -18,7 +18,7 @@ import org.alloy.metal.function._Predicate;
 
 import com.google.common.collect.Iterators;
 
-public class IteratorSupplierContext<T, N> implements SupplierContext<IteratorSupplierState<T, N>, NullableValue<N>> {
+public class IteratorSupplierContext<T, N> implements SupplierContext<IteratorSupplierState<T, N>, Value<N>> {
 	private Iterable<T> iterable;
 	private IteratorProcessor<T, N> processor = new DefaultIteratorProcessor<>();
 
@@ -30,7 +30,7 @@ public class IteratorSupplierContext<T, N> implements SupplierContext<IteratorSu
 	}
 
 	@Override
-	public StatefulSupplier<IteratorSupplierState<T, N>, NullableValue<N>> getPrimarySupplier() {
+	public StatefulSupplier<IteratorSupplierState<T, N>, Value<N>> getPrimarySupplier() {
 		return (state) -> {
 			return this.getNext(state);
 		};
@@ -43,11 +43,11 @@ public class IteratorSupplierContext<T, N> implements SupplierContext<IteratorSu
 		};
 	}
 
-	private NullableValue<N> getNext(IteratorSupplierState<T, N> state) {
+	private Value<N> getNext(IteratorSupplierState<T, N> state) {
 		boolean finished = false;
 		while (!finished) {
 			try {
-				return NullableValue.of(_Iterator.next(state.getResults(), filter));
+				return Value.of(_Iterator.next(state.getResults(), filter));
 			} catch (NoSuchElementException e) {
 				if (state.getValuesToProcess().hasNext()) {
 					processor.processValues(state, transformer);
@@ -58,7 +58,7 @@ public class IteratorSupplierContext<T, N> implements SupplierContext<IteratorSu
 			}
 		}
 
-		return NullableValue.none();
+		return Value.none();
 	}
 
 	public Predicate<? super N> getFilter() {

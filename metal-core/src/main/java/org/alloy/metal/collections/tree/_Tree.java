@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.alloy.metal.collections.iterable._Iterable;
-import org.alloy.metal.function.NullableValue;
+import org.alloy.metal.function.Value;
 import org.alloy.metal.function._Tuple;
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,7 +36,7 @@ public class _Tree {
 					}
 
 					if (tree == null) {
-						return NullableValue.none();
+						return Value.none();
 					}
 
 					context.getFirst().remove(tree);
@@ -45,7 +45,7 @@ public class _Tree {
 					}
 
 					context.getSecond().add(tree);
-					return NullableValue.of(tree.getHead());
+					return Value.of(tree.getHead());
 				},
 				() -> {
 					Collection<Tree<T>> elementsToProcess = Sets.newHashSet();

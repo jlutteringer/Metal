@@ -99,7 +99,7 @@ public class ImportProcessor {
 					TransformerFactory tFactory = TransformerFactory.newInstance();
 					Transformer xmlTransformer = tFactory.newTransformer();
 					xmlTransformer.setOutputProperty(OutputKeys.VERSION, "1.0");
-					xmlTransformer.setOutputProperty(OutputKeys.ENCODING, _String.CHARACTER_ENCODING);
+					xmlTransformer.setOutputProperty(OutputKeys.ENCODING, _String.CHARACTER_ENCODING.toString());
 					xmlTransformer.setOutputProperty(OutputKeys.METHOD, "xml");
 					xmlTransformer.setOutputProperty(OutputKeys.INDENT, "yes");
 

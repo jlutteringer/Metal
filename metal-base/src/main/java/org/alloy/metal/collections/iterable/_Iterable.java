@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 
 import org.alloy.metal.collections.iterable.IteratorSupplierContext.BreadthTraversingIteratorProcessor;
 import org.alloy.metal.collections.lists._Lists;
-import org.alloy.metal.function.NullableValue;
+import org.alloy.metal.function.Value;
 import org.alloy.metal.function.StatefulSupplier;
 import org.alloy.metal.function._Predicate;
 import org.alloy.metal.function.equality.Equalitor;
@@ -28,7 +28,7 @@ public class _Iterable {
 		return new GeneratingIterable<T>(supplier);
 	}
 
-	public static <T, N> Iterable<T> createFromElementSupplier(StatefulSupplier<N, NullableValue<T>> supplier, Supplier<N> stateGenerator) {
+	public static <T, N> Iterable<T> createFromElementSupplier(StatefulSupplier<N, Value<T>> supplier, Supplier<N> stateGenerator) {
 		return _Iterable.fromIteratorSupplier(_Iterable.createIteratorGeneratorFromElementGenerator(supplier, stateGenerator));
 	}
 
@@ -36,7 +36,7 @@ public class _Iterable {
 		return _Iterable.createFromElementSupplier(context.getPrimarySupplier(), context.getStateSupplier());
 	}
 
-	private static <T, N> Supplier<Iterator<T>> createIteratorGeneratorFromElementGenerator(StatefulSupplier<N, NullableValue<T>> supplier, Supplier<N> stateGenerator) {
+	private static <T, N> Supplier<Iterator<T>> createIteratorGeneratorFromElementGenerator(StatefulSupplier<N, Value<T>> supplier, Supplier<N> stateGenerator) {
 		return () -> new GeneratingIterator<T, N>(supplier, stateGenerator.get());
 	}
 

@@ -7,16 +7,16 @@ import org.alloy.metal.object._Object;
 
 import com.google.common.base.Objects;
 
-public abstract class NullableValue<T> implements Serializable {
+public abstract class Value<T> implements Serializable {
 	private static final long serialVersionUID = 8836281423379233405L;
 
-	public static <T> NullableValue<T> of(T value) {
+	public static <T> Value<T> of(T value) {
 		return new Some<T>(value);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> NullableValue<T> none() {
-		return (NullableValue<T>) None.INSTANCE;
+	public static <T> Value<T> none() {
+		return (Value<T>) None.INSTANCE;
 	}
 
 	public abstract boolean isDefined();
@@ -40,7 +40,7 @@ public abstract class NullableValue<T> implements Serializable {
 	@Override
 	public abstract String toString();
 
-	private static final class Some<T> extends NullableValue<T> {
+	private static final class Some<T> extends Value<T> {
 
 		private static final long serialVersionUID = 0;
 		private final T value;
@@ -99,7 +99,7 @@ public abstract class NullableValue<T> implements Serializable {
 		}
 	}
 
-	private static final class None extends NullableValue<Object> {
+	private static final class None extends Value<Object> {
 
 		private static final long serialVersionUID = 0;
 		private static final None INSTANCE = new None();
