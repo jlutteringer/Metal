@@ -3,13 +3,12 @@ package org.alloy.metal.collections.tree;
 import java.util.Collection;
 import java.util.List;
 
-import org.alloy.metal.collections.iterable._Iterable;
-import org.alloy.metal.function.Value;
-import org.alloy.metal.function._Tuple;
+import org.alloy.metal.collections.MutableCollection;
+import org.alloy.metal.collections.set._Sets;
+import org.alloy.metal.iteration._Iteration;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 public class _Tree {
 	public static <T> HashTree<T> newHashTree(T head) {
@@ -25,34 +24,34 @@ public class _Tree {
 	}
 
 	public static <T> Iterable<T> iterateBreadthFirst(final Tree<T> topLevelTree) {
-		return _Iterable.createFromElementSupplier(
-				(context) -> {
-					Tree<T> tree = null;
-					for (Tree<T> elementToProcess : context.getFirst()) {
-						if (context.getSecond().containsAll(elementToProcess.getParents())) {
-							tree = elementToProcess;
-							break;
-						}
-					}
+		return _Iteration.<T> iterable(() -> {
+			MutableCollection<Tree<T>> elementsToProcess = _Sets.set();
+			MutableCollection<Tree<T>> visitedElements = _Sets.set();
+			elementsToProcess.add(topLevelTree);
 
-					if (tree == null) {
-						return Value.none();
+			return (consumer) -> {
+				Tree<T> tree = null;
+				for (Tree<T> elementToProcess : elementsToProcess) {
+					if (visitedElements.containsAll(elementToProcess.getParents())) {
+						tree = elementToProcess;
+						break;
 					}
+				}
 
-					context.getFirst().remove(tree);
-					for (Tree<T> subTree : tree.getChildren()) {
-						context.getFirst().add(subTree);
-					}
+				if (tree == null) {
+					return false;
+				}
 
-					context.getSecond().add(tree);
-					return Value.of(tree.getHead());
-				},
-				() -> {
-					Collection<Tree<T>> elementsToProcess = Sets.newHashSet();
-					Collection<Tree<T>> visitedElements = Sets.newHashSet();
-					elementsToProcess.add(topLevelTree);
-					return _Tuple.of(elementsToProcess, visitedElements);
-				});
+				elementsToProcess.remove(tree);
+				for (Tree<T> subTree : tree.getChildren()) {
+					elementsToProcess.add(subTree);
+				}
+
+				visitedElements.add(tree);
+				consumer.accept(tree.getHead());
+				return true;
+			};
+		});
 	}
 
 	public static <T> String stringify(Tree<T> tree) {

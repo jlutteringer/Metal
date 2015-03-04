@@ -3,6 +3,8 @@ package org.alloy.metal.utilities;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.alloy.metal.utility._Exception;
+
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;

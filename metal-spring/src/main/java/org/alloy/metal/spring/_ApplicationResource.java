@@ -5,11 +5,10 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.alloy.metal.collections.iterable._Iterable;
-import org.alloy.metal.collections.lists._Lists;
+import org.alloy.metal.collections.list.MutableList;
+import org.alloy.metal.collections.list._Lists;
 import org.alloy.metal.resource._Resource;
-import org.alloy.metal.utilities._Exception;
-import org.alloy.metal.utilities._File;
+import org.alloy.metal.utility._Exception;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +21,7 @@ public class _ApplicationResource {
 	private static final Logger logger = LogManager.getLogger(_Resource.class);
 
 	public static Resource getResource(String resourceLocation, ApplicationContext context) {
-		return _Iterable.getSingleResult(getResources(resourceLocation, context));
+		return _Lists.wrap(getResources(resourceLocation, context)).single().orElse(null);
 	}
 
 	public static List<Resource> getResources(String resourceLocation, ApplicationContext context) {
@@ -32,7 +31,7 @@ public class _ApplicationResource {
 
 	public static List<Resource> getConcreteResources(Resource resource) {
 		logger.printf(Level.DEBUG, "Retrieving concrete file resources for resource [%s]", resource);
-		List<File> files = Lists.newArrayList();
+		MutableList<File> files = _Lists.list();
 		LinkedList<File> filesToProcess = Lists.newLinkedList();
 		filesToProcess.add(new File(_Resource.getPath(resource)));
 
@@ -46,8 +45,11 @@ public class _ApplicationResource {
 			}
 		}
 
-		List<Resource> concreteFileResources = _Lists.transform(
-				_Resource.getResourcePaths(_File.getPaths(files)), (path) -> getResource(path, Spring.getCurrentApplicationContext()));
+		List<Resource> concreteFileResources = files.map((file) -> file.getPath())
+				.map(_Resource::getResourcePath)
+				.map((path) -> getResource(path, Spring.getCurrentApplicationContext()))
+				.collectList()
+				.asList();
 
 		logger.debug("Retrieved concrete file resources " + concreteFileResources);
 		return concreteFileResources;

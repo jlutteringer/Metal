@@ -1,16 +1,15 @@
 package org.alloy.metal.collections.directory;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.alloy.metal.collections.iterable._Iterable;
-import org.alloy.metal.collections.lists._Lists;
-import org.alloy.metal.function.OldFunction;
+import org.alloy.metal.collections.list.MutableList;
+import org.alloy.metal.collections.list._Lists;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 public class ConcreteDirectory<T, N> implements Directory<T, N> {
-	private List<DirectoryIndex<T, N>> indexes = Lists.newArrayList();
+	private MutableList<DirectoryIndex<T, N>> indexes = _Lists.list();
 
 	@Override
 	public boolean containsKey(T key) {
@@ -22,46 +21,53 @@ public class ConcreteDirectory<T, N> implements Directory<T, N> {
 
 	@Override
 	public boolean containsValue(N value) {
-		return Iterables.contains(_Directory.unwrapValues(indexes), value);
+		return indexes.flatMap((index) -> _Lists.wrap(index.getEntries()))
+				.map((entry) -> entry.getValue())
+				.contains(value);
 	}
 
 	@Override
 	public List<N> get(T key) {
-		Iterable<DirectoryIndex<T, N>> matchingValues =
-				_Iterable.filter(indexes, _Directory.getDirectoryIndexKeyMatcher(key));
-
-		return _Lists.list(_Directory.unwrapValues(matchingValues));
+		return indexes.filter(_Directory.getDirectoryIndexKeyMatcher(key))
+				.flatMap((index) -> _Lists.wrap(index.getEntries()))
+				.map((entry) -> entry.getValue())
+				.collectList()
+				.asList();
 	}
 
 	@Override
 	public List<N> get() {
-		return _Lists.list(_Directory.unwrapValues(indexes));
+		return indexes.flatMap((index) -> _Lists.wrap(index.getEntries()))
+				.map((entry) -> entry.getValue())
+				.collectList()
+				.asList();
 	}
 
 	@Override
 	public List<DirectoryEntry<T, N>> getEntries(T key) {
-		Iterable<DirectoryIndex<T, N>> matchingValues =
-				_Iterable.filter(indexes, _Directory.getDirectoryIndexKeyMatcher(key));
-
-		return _Lists.list(_Directory.unwrapEntries(matchingValues));
+		return indexes.filter(_Directory.getDirectoryIndexKeyMatcher(key))
+				.flatMap((index) -> _Lists.wrap(index.getEntries()))
+				.collectList()
+				.asList();
 	}
 
 	@Override
 	public List<DirectoryEntry<T, N>> getEntries() {
-		return _Lists.list(_Directory.unwrapEntries(indexes));
+		return indexes.flatMap((index) -> _Lists.wrap(index.getEntries()))
+				.collectList()
+				.asList();
 	}
 
 	@Override
 	public List<DirectoryIndex<T, N>> getIndexes(T key) {
-		Iterable<DirectoryIndex<T, N>> matchingValues =
-				_Iterable.filter(indexes, _Directory.getDirectoryIndexKeyMatcher(key));
-
-		return _Lists.list(matchingValues);
+		return indexes.filter(_Directory.getDirectoryIndexKeyMatcher(key))
+				.collectList()
+				.asList();
 	}
 
 	@Override
 	public List<DirectoryIndex<T, N>> getIndexes() {
-		return _Lists.list(indexes);
+		return _Lists.utilList(indexes);
 	}
 
 	@Override
@@ -71,17 +77,17 @@ public class ConcreteDirectory<T, N> implements Directory<T, N> {
 
 	@Override
 	public DirectoryEntry<T, N> put(T key, N value, boolean createNew) {
-		DirectoryIndex<T, N> index = null;
+		Optional<DirectoryIndex<T, N>> index = Optional.empty();
 		if (!createNew) {
-			index = _Iterable.filterSingleResult(indexes, _Directory.getDirectoryIndexKeyMatcher(key), true);
+			index = indexes.filter(_Directory.getDirectoryIndexKeyMatcher(key))
+					.single();
 		}
 
-		if (index == null) {
-			index = _Directory.createIndex(key);
-			indexes.add(index);
-		}
-
-		return index.add(value);
+		return index.orElseGet(() -> {
+			DirectoryIndex<T, N> newIndex = _Directory.createIndex(key);
+			indexes.add(newIndex);
+			return newIndex;
+		}).add(value);
 	}
 
 	@Override
@@ -109,7 +115,8 @@ public class ConcreteDirectory<T, N> implements Directory<T, N> {
 
 	@Override
 	public long size() {
-		return OldFunction.accumulate(indexes, (index) -> index.size());
+		return indexes.map((index) -> index.size())
+				.collect(0L, (result, value) -> result + value);
 	}
 
 	@Override

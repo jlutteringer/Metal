@@ -2,8 +2,8 @@ package org.alloy.metal.collections;
 
 import java.util.Collection;
 
-import org.alloy.metal.function.Condition;
-import org.alloy.metal.function.equality._Equality;
+import org.alloy.metal.equality._Equality;
+import org.alloy.metal.utility.Condition;
 
 import com.google.common.collect.Lists;
 

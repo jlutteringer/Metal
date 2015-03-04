@@ -43,7 +43,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.alloy.metal.collections.iterable._Iterable;
+import org.alloy.metal.collections.list.MutableList;
+import org.alloy.metal.collections.list._Lists;
 import org.alloy.metal.configuration.ConfigurationLocation;
 import org.alloy.metal.configuration.PatchableConfiguration;
 import org.alloy.metal.configuration._Configuration;
@@ -265,7 +266,7 @@ public class MergeContext implements PatchableConfiguration, ApplicationContextA
 	}
 
 	private void setHandlers(Properties props) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-		List<MergeHandler> tempHandlers = Lists.newArrayList();
+		MutableList<MergeHandler> tempHandlers = _Lists.list();
 		String[] keys = props.keySet().toArray(new String[props.keySet().size()]);
 		for (String key : keys) {
 			if (key.startsWith("handler.")) {
@@ -296,8 +297,10 @@ public class MergeContext implements PatchableConfiguration, ApplicationContextA
 		for (MergeHandler temp : tempHandlers) {
 			if (temp.getName().contains(".")) {
 				String parentName = temp.getName().substring(0, temp.getName().lastIndexOf("."));
-				MergeHandler parent = _Iterable.getSingleResult(
-						_Iterable.filter(tempHandlers, (handler) -> handler.getName().equals(parentName)));
+
+				MergeHandler parent =
+						tempHandlers.filter((handler) -> handler.getName().equals(parentName))
+								.singleStrict();
 
 				parent.getChildren().add(temp);
 			} else {

@@ -1,9 +1,10 @@
 package org.alloy.metal.reflection;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
+import org.alloy.metal.collections.list.AList;
+import org.alloy.metal.collections.list.MutableList;
+import org.alloy.metal.collections.list._Lists;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -14,20 +15,25 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.SystemPropertyUtils;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
 
 public class _ClassPath {
-	public static List<String> getClasspathEntries() {
+	public static final AList<String> CLASSPATH_ENTRIES;
+
+	static {
 		String[] classpathEntries = System.getProperty("java.class.path").split(File.pathSeparator);
-		return Arrays.asList(classpathEntries);
+		CLASSPATH_ENTRIES = _Lists.immutableList(classpathEntries);
+	}
+
+	public static AList<String> getClasspathEntries() {
+		return CLASSPATH_ENTRIES;
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> List<Class<T>> scanForType(String basePackage, Class<T> type) {
+	public static <T> AList<Class<T>> scanForType(String basePackage, Class<T> type) {
 		ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 		MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
 
-		List<Class<T>> candidates = Lists.newArrayList();
+		MutableList<Class<T>> candidates = _Lists.list();
 
 		String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
 				resolveBasePackage(basePackage) + "/" + "**/*.class";

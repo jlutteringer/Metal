@@ -1,19 +1,19 @@
 package org.alloy.metal.json;
 
 public class _Json {
-	// TODO
+	// FUTURE
 	public static JsonStatus success() {
 		JsonStatus status = new JsonStatus();
 		status.setMessage("success");
 		return status;
 	}
 
-	// TODO
+	// FUTURE
 	public static JsonStatus failure() {
 		return null;
 	}
 
-	// TODO
+	// FUTURE
 	public static JsonStatus failure(String message, Object... objects) {
 		return null;
 	}

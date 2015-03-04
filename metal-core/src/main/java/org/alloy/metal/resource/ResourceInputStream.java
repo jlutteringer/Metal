@@ -23,17 +23,15 @@ package org.alloy.metal.resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-import org.alloy.metal.collections.iterable._Iterable;
+import org.alloy.metal.collections.list._Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
 
 /**
 * @author jfischer
@@ -125,15 +123,9 @@ public class ResourceInputStream extends InputStream {
 	}
 
 	public static Resource toResource(ResourceInputStream stream) {
-		return _Iterable.getSingleResult(toResources(Collections.singletonList(stream)), true);
-	}
-
-	public static List<Resource> toResources(List<ResourceInputStream> streams) {
-		List<Resource> resources = Lists.newArrayList();
-		for (ResourceInputStream stream : streams) {
-			resources.add(new InputStreamResource(stream));
-		}
-		return resources;
+		return _Lists.list(stream)
+				.map(InputStreamResource::new)
+				.singleStrict();
 	}
 
 	public static Function<Resource, ResourceInputStream> transformer() {

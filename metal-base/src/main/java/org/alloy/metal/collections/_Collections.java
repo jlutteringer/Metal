@@ -1,8 +1,11 @@
 package org.alloy.metal.collections;
 
 import java.util.Collection;
+import java.util.Set;
 
-import org.alloy.metal.function.equality.Equalitor;
+import org.alloy.metal.equality.Equalitor;
+
+import com.google.common.collect.Sets;
 
 public class _Collections {
 	public static <T> ListenableCollection<T> listenableCollection(Collection<T> target) {
@@ -30,13 +33,20 @@ public class _Collections {
 		}
 	}
 
-	private static <T, N> boolean compareOrderless(Collection<T> first, Collection<N> second, Equalitor<T, N> equalitor) {
-		for (T item : first) {
+	private static <T, N> boolean compareOrderless(Collection<T> targetCollection, Collection<N> containingCollection, Equalitor<T, N> equalitor) {
+		Set<Integer> taggedIndicies = Sets.newHashSet();
+
+		for (T targetItem : targetCollection) {
 			boolean match = false;
-			for (N item2 : second) {
-				if (equalitor.apply(item, item2)) {
+
+			int count = 0;
+			for (N potentialMatch : containingCollection) {
+				if (!taggedIndicies.contains(count) && equalitor.apply(targetItem, potentialMatch)) {
 					match = true;
+					taggedIndicies.add(count);
 				}
+
+				count++;
 			}
 
 			if (!match) {

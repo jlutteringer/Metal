@@ -19,8 +19,8 @@
 	<modules>
 		<module>metal-core</module>
 		<module>metal-spring</module>
-		<module>metal-collections</module>
 		<module>metal-base</module>
+		<module>metal-new</module>
 	</modules>
 	<build>
 		<resources>
@@ -157,6 +157,13 @@
 		<dependencies>
 			<dependency>
 				<groupId>org.alloy</groupId>
+				<artifactId>anneal</artifactId>
+				<version>${alloy.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.alloy</groupId>
 				<artifactId>metal-base</artifactId>
 				<version>${alloy.version}</version>
 				<type>jar</type>
@@ -165,13 +172,6 @@
 			<dependency>
 				<groupId>org.alloy</groupId>
 				<artifactId>metal-core</artifactId>
-				<version>${alloy.version}</version>
-				<type>jar</type>
-				<scope>compile</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.alloy</groupId>
-				<artifactId>metal-collections</artifactId>
 				<version>${alloy.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>

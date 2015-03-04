@@ -1,30 +1,29 @@
 package org.alloy.metal.collections.directory;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.alloy.metal.collections.directory.ConcreteDirectory.ConcreteDirectoryEntry;
 import org.alloy.metal.collections.directory.ConcreteDirectory.ConcreteDirectoryIndex;
-import org.alloy.metal.collections.iterable._Iterable;
 import org.alloy.metal.function.Tuple.Pair;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 public class _Directory {
-	public static <N, T> Iterable<N> unwrapValues(Iterable<DirectoryIndex<T, N>> indexes) {
-		return _Iterable.transform(_Directory.unwrapEntries(indexes), new Function<DirectoryEntry<T, N>, N>() {
-			@Override
-			public N apply(DirectoryEntry<T, N> first) {
-				return first.getValue();
-			}
-		});
-	}
-
-	public static <T, N> Iterable<DirectoryEntry<T, N>> unwrapEntries(Iterable<DirectoryIndex<T, N>> indexes) {
-		return _Iterable.multiplexingIterable(indexes, (index) -> index.getEntries());
-	}
+//	public static <N, T> Iterable<N> unwrapValues(Iterable<DirectoryIndex<T, N>> indexes) {
+//
+//		return _Iterable.transform(_Directory.unwrapEntries(indexes), new Function<DirectoryEntry<T, N>, N>() {
+//			@Override
+//			public N apply(DirectoryEntry<T, N> first) {
+//				return first.getValue();
+//			}
+//		});
+//	}
+//
+//	public static <T, N> Iterable<DirectoryEntry<T, N>> unwrapEntries(Iterable<DirectoryIndex<T, N>> indexes) {
+//		return _Iterable.multiplexingIterable(indexes, (index) -> index.getEntries());
+//	}
 
 	public static <T, N> Predicate<DirectoryIndex<T, N>> getDirectoryIndexKeyMatcher(final T key) {
 		return (index) -> Objects.equal(key, index.getKey());

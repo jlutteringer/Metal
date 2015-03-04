@@ -3,12 +3,12 @@ package org.metal.function.equality;
 import java.util.Map;
 import java.util.Optional;
 
+import org.alloy.metal.equality.Equalitor;
+import org.alloy.metal.equality.SymmetricEqualitor;
 import org.alloy.metal.function.Groups;
 import org.alloy.metal.function.Groups.BiGroup;
 import org.alloy.metal.function.Tuple.Pair;
 import org.alloy.metal.function._Tuple;
-import org.alloy.metal.function.equality.Equalitor;
-import org.alloy.metal.function.equality.SymmetricEqualitor;
 import org.alloy.metal.object._Object;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

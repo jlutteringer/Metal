@@ -20,6 +20,7 @@
 package org.alloy.metal.xml.merge;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import javax.xml.transform.TransformerException;
@@ -28,7 +29,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.alloy.metal.collections.iterable._Iterable;
+import org.alloy.metal.collections.list.MutableList;
+import org.alloy.metal.collections.list._Lists;
 import org.alloy.metal.function.Tuple.Pair;
 import org.alloy.metal.function._Tuple;
 import org.alloy.metal.xml._XPath;
@@ -95,24 +97,25 @@ public class MergePoint {
 
 		String[] xPaths = handler.getXPath().split(" ");
 
-		List<Node> sourceNodes = Lists.newArrayList();
-		List<Node> patchNodes = Lists.newArrayList();
+		MutableList<Node> sourceNodes = _Lists.list();
+		MutableList<Node> patchNodes = _Lists.list();
 
 		for (String xPathVal : xPaths) {
 			sourceNodes.addAll(this.getNodes(xPathVal, sourceLoc));
 			patchNodes.addAll(this.getNodes(xPathVal, patchLoc));
 		}
 
-		List<Pair<Node, Node>> matchedNodes = Lists.newArrayList();
-		List<Node> unmatchedPatchNodes = Lists.newArrayList();
+		MutableList<Pair<Node, Node>> matchedNodes = _Lists.list();
+		MutableList<Node> unmatchedPatchNodes = _Lists.list();
 
 		for (Node sourceNode : sourceNodes) {
-			Node matchingNode =
-					_Iterable.filterSingleResult(patchNodes, this.filter(sourceNode, handler.getMatcherType()), true);
+			Optional<Node> matchingNode =
+					patchNodes.filter(this.filter(sourceNode, handler.getMatcherType()))
+							.single();
 
-			if (matchingNode != null) {
+			if (matchingNode.isPresent()) {
 				log.debug("Match found: " + matchingNode + " for source node " + sourceNode);
-				matchedNodes.add(_Tuple.of(sourceNode, matchingNode));
+				matchedNodes.add(_Tuple.of(sourceNode, matchingNode.get()));
 			}
 		}
 
@@ -183,8 +186,8 @@ public class MergePoint {
 		}
 	}
 
-	private List<Node> getNodes(String xPathVal, Object doc) throws XPathExpressionException {
-		List<Node> nodes = Lists.newArrayList();
+	private MutableList<Node> getNodes(String xPathVal, Object doc) throws XPathExpressionException {
+		MutableList<Node> nodes = _Lists.list();
 		NodeList temp1 = (NodeList) xPath.evaluate(xPathVal, doc, XPathConstants.NODESET);
 		if (temp1 != null) {
 			int length = temp1.getLength();

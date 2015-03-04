@@ -3,16 +3,14 @@ package org.alloy.metal.resource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.function.Function;
 
-import org.alloy.metal.collections.iterable._Iterable;
-import org.alloy.metal.function.ExceptionConsumer;
-import org.alloy.metal.function.ExceptionFunction;
 import org.alloy.metal.reflection._ClassPath;
 import org.alloy.metal.utilities._Closeable;
-import org.alloy.metal.utilities._Exception;
 import org.alloy.metal.utilities._Stream;
+import org.alloy.metal.utility.ExceptionConsumer;
+import org.alloy.metal.utility.ExceptionFunction;
+import org.alloy.metal.utility._Exception;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
@@ -105,17 +103,14 @@ public class _Resource {
 		return false;
 	}
 
-	public static Iterable<String> getResourcePaths(Iterable<String> paths) {
-		List<String> classpathEntries = _ClassPath.getClasspathEntries();
-		return _Iterable.transform(paths, (path) -> {
-			for (String classpathEntry : classpathEntries) {
-				if (path.startsWith(classpathEntry)) {
-					return path.replace(classpathEntry, "");
-				}
+	public static String getResourcePath(String path) {
+		for (String classpathEntry : _ClassPath.getClasspathEntries()) {
+			if (path.startsWith(classpathEntry)) {
+				return path.replace(classpathEntry, "");
 			}
+		}
 
-			return path;
-		});
+		return path;
 	}
 
 	public static String stringify(Resource resource) {

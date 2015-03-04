@@ -3,8 +3,9 @@ package org.alloy.metal.collections;
 import java.util.Collection;
 import java.util.function.Consumer;
 
+import org.alloy.metal.collections.ListenableCollection.CollectionOperation;
 import org.alloy.metal.listener.ListenerContext;
-import org.alloy.metal.utilities._Exception;
+import org.alloy.metal.utility._Exception;
 
 import com.google.common.collect.ForwardingCollection;
 

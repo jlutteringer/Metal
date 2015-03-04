@@ -2,8 +2,9 @@ package org.alloy.metal.utilities;
 
 import java.io.Closeable;
 
-import org.alloy.metal.function.ExceptionConsumer;
-import org.alloy.metal.function.ExceptionFunction;
+import org.alloy.metal.utility.ExceptionConsumer;
+import org.alloy.metal.utility.ExceptionFunction;
+import org.alloy.metal.utility._Exception;
 
 public class _Closeable {
 	public static <T extends Closeable> void with(T closeable, ExceptionConsumer<T, ?> consumer) {

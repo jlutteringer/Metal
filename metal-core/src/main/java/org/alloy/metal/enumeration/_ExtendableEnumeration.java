@@ -1,17 +1,15 @@
 package org.alloy.metal.enumeration;
 
-import java.util.List;
-import java.util.Map;
-
-import org.alloy.metal.collections.iterable._Iterable;
-import org.alloy.metal.collections.lists._Lists;
-import org.alloy.metal.collections.map._Map;
+import org.alloy.metal.collections.list.MutableList;
+import org.alloy.metal.collections.list._Lists;
+import org.alloy.metal.collections.map.MutableMap;
+import org.alloy.metal.collections.map._Maps;
 
 import com.google.common.base.Throwables;
 
 public class _ExtendableEnumeration {
 	private static volatile boolean configured = false;
-	private static Map<String, List<ExtendableEnumeration>> enumerations = _Map.defaultHashMap(_Lists.listSupplier());
+	private static MutableMap<String, MutableList<ExtendableEnumeration>> enumerations = _Maps.defaultMap(() -> _Lists.list());
 
 	public static boolean isConfigured() {
 		return configured;
@@ -46,12 +44,10 @@ public class _ExtendableEnumeration {
 		}
 
 		if (enumerations.containsKey(type)) {
-			try {
-				return (T) _Iterable.filterSingleResult(enumerations.get(type),
-						(enumeration) -> clazz.isAssignableFrom(enumeration.getClass()));
-			} catch (Exception e) {
-				throw new RuntimeException("Error finding matching enumeration for type: " + type + " and class " + clazz, e);
-			}
+			return (T) enumerations.get(type)
+					.filter((enumeration) -> clazz.isAssignableFrom(enumeration.getClass()))
+					.single()
+					.orElseThrow(() -> new RuntimeException("Error finding matching enumeration for type: " + type + " and class " + clazz));
 		}
 
 		throw new RuntimeException("No matching enumeration for type: " + type + " and class " + clazz);

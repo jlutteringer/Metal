@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.alloy.metal.string._String;
+import org.alloy.metal.utility._Exception;
 
 import com.google.common.base.Throwables;
 import com.google.common.io.ByteStreams;
@@ -65,7 +66,7 @@ public class _Stream {
 		}
 	}
 
-	// TODO close this input stream
+	// FUTURE close this input stream
 	public static void copy(InputStream stream, OutputStream out) {
 		_Exception.propagate(() -> ByteStreams.copy(stream, out));
 	}

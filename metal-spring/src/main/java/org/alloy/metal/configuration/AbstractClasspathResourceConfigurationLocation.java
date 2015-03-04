@@ -5,7 +5,7 @@ import java.util.List;
 import org.alloy.metal.collections.directory.Directory;
 import org.alloy.metal.collections.directory.DirectoryEntry;
 import org.alloy.metal.collections.directory._Directory;
-import org.alloy.metal.collections.lists._Lists;
+import org.alloy.metal.collections.list._Lists;
 import org.alloy.metal.resource.ResourceInputStream;
 import org.alloy.metal.spring._ApplicationResource;
 import org.springframework.context.ApplicationContext;
@@ -27,7 +27,10 @@ public abstract class AbstractClasspathResourceConfigurationLocation extends Abs
 
 	@Override
 	public List<ResourceInputStream> resolveResouceLocations(String resourceLocation, ApplicationContext context) {
-		return _Lists.transform(_ApplicationResource.getResources(resourceLocation, context), ResourceInputStream.transformer());
+		return _Lists.wrap(_ApplicationResource.getResources(resourceLocation, context))
+				.map(ResourceInputStream.transformer())
+				.collectList()
+				.asList();
 	}
 
 	@Override

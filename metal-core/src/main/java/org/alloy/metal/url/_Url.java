@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.alloy.metal.string._String;
 import org.alloy.metal.url.AlloyUrl.AlloyUrlBuilder;
-import org.alloy.metal.utilities._Exception;
+import org.alloy.metal.utility._Exception;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.Lists;
